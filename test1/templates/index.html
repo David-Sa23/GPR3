@@ -107,7 +107,12 @@
     <h1>📡 Monitor de Tráfego em Tempo Real</h1>
 
     <!-- Semáforo -->
-    <div id="semaforo" class="semaforo parado"></div>
+    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <div id="semaforo" class="semaforo parado"></div>
+        <span id="estadoCaptura" style="margin-left: 10px; font-weight: bold; color: #444;">
+            🟥 Parado
+        </span>
+    </div>
 
     <button onclick="iniciarCaptura()">▶️ Iniciar Captura</button>
     <button class="stop" onclick="pararCaptura()">⛔ Parar Captura</button>
