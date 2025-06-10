@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor de Tráfego</title>
+    <script src="/static/script.js" defer></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            margin: 5px 5px 20px 0;
+            cursor: pointer;
+        }
+
+        .start {
+            background-color: #007BFF;
+        }
+
+        .start:hover {
+            background-color: #0056b3;
+        }
+
+        .stop {
+            background-color: #dc3545;
+        }
+
+        .stop:hover {
+            background-color: #a71d2a;
+        }
+
+        .download {
+            background-color: #0069d9;
+        }
+
+        .download:hover {
+            background-color: #004da0;
+        }
+
+        .packet-list {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .packet {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .anomalo {
+            color: red;
+            font-weight: bold;
+        }
+
+        .metrics-box {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #ffffffcc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .ip-info {
+            color: #333;
+        }
+
+        .freq {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .semaforo {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            margin-right: 10px;
+        }
+
+        .parado {
+            background-color: #dc3545;
+        }
+
+        .ativo {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="metrics-box" id="metricsBox">
+        <strong>Métricas do Modelo:</strong><br>
+        Accuracy: <span id="acc">95.45</span>%<br>
+        Precision: <span id="prec">85.71</span>%<br>
+        Recall: <span id="rec">100</span>%<br>
+        F1-Score: <span id="f1">92.31</span>%
+    </div>
+
+    <h1>📡 Monitor de Tráfego em Tempo Real</h1>
+
+    <div class="status">
+        <div id="semaforo" class="semaforo parado"></div>
+        <span id="estadoCaptura">🟥 Parado</span>
+    </div>
+
+    <button class="start" onclick="iniciarCaptura()">▶️ Iniciar Captura</button>
+    <button class="stop" onclick="pararCaptura()">⛔ Parar Captura</button>
+    <button class="download" onclick="window.location.href='/download-graph'">📥 Download do Gráfico</button>
+
+    <div class="packet-list" id="packetList">
+        <div class="packet">
+            <div>
+                <div class="ip-info">📦 192.168.1.107 → 140.82.114.22</div>
+                <div class="freq">Tamanho: 66 bytes | Protocolo: 1 | Freq: 1000 pkt/s</div>
+            </div>
+            <div class="anomalo">🔴 Anómalo</div>
+        </div>
+        <!-- Repita os blocos acima conforme os pacotes -->
+    </div>
+
+</body>
+</html>
