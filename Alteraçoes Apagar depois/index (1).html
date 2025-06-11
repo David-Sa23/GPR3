@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor de Tráfego</title>
+    <script src="/static/script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+            background: #f5f5f5;
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .stop {
+            background-color: #dc3545;
+        }
+
+        .stop:hover {
+            background-color: #c82333;
+        }
+
+        .start {
+            background-color: #28a745;
+        }
+
+        button:disabled {
+            background-color: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed !important;
+            border: none !important;
+        }
+
+        .packet-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .packet {
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 6px;
+        }
+
+        .normal {
+            color: green;
+            font-weight: bold;
+        }
+
+        .anomalo {
+            color: red;
+            font-weight: bold;
+        }
+
+        .metrics-box {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #ffffffcc;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .packet-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .packet-table th, .packet-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .packet-table th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .packet-table tr:nth-child(even) td {
+            background: #fafbfc;
+        }
+
+        .botoes-centro {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #packetListContainer {
+            display: none;
+            height: 300px;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="metrics-box" id="metricsBox">
+        <strong>Métricas do Modelo:</strong><br>
+        Accuracy: <span id="acc">...</span>%<br>
+        Precision: <span id="prec">...</span>%<br>
+        Recall: <span id="rec">...</span>%<br>
+        F1-Score: <span id="f1">...</span>%
+    </div>
+
+    <h1>📡 Monitor de Tráfego em Tempo Real</h1>
+
+    <div class="botoes-centro">
+        <button id="btnIniciar" class="start" onclick="iniciarCaptura()">▶️ Iniciar Captura</button>
+        <button id="btnParar" class="stop" onclick="pararCaptura()" disabled>⛔ Parar Captura</button>
+        <button id="btnDownload" onclick="window.location.href='/download-graph'" disabled>📥 Download Estatísticas</button>
+        <button id="btnExportarCSV" onclick="window.location.href='/export-csv'" disabled>⬇️ Exportar CSV</button>
+    </div>
+
+    <div style="margin: 30px 0;">
+        <canvas id="graficoDeteccao" height="50"></canvas>
+    </div>
+
+    <div class="botoes-centro">
+        <label for="formatoView">Visualização:</label>
+        <select id="formatoView" onchange="alternarFormato()">
+            <option value="amigavel">Formato Simples</option>
+            <option value="tabela">Formato Tabela</option>
+        </select>
+    </div>
+
+    <!-- Vista amigável -->
+    <div class="packet-list" id="packetList" style="display: block;">
+        <p><em>Aguardando pacotes...</em></p>
+    </div>
+
+    <!-- Vista tabela -->
+    <div id="packetListContainer">
+        <table id="packetList2" class="packet-table">
+            <thead>
+                <tr>
+                    <th>Nº</th>
+                    <th>Origem</th>
+                    <th>Porta Origem</th>
+                    <th>Destino</th>
+                    <th>Porta Destino</th>
+                    <th>Tamanho (bytes)</th>
+                    <th>Protocolo</th>
+                    <th>Frequência (pkt/s)</th>
+                    <th>Detecção</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas serão inseridas aqui -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
